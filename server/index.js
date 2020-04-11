@@ -47,9 +47,3 @@ app.route('/terminate')
 app.listen(PORT, () => {
   console.log(`Server listening on port ${PORT}`)
 })
-
-var express = require('express')
-var router = express.Router()
-router.get('/pilots2', function (req, res) {
-  res.get(getPilots)
-})

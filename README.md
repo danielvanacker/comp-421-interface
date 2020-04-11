@@ -19,6 +19,6 @@ Note: always call /terminate before closing the application to close the serverp
 TBD
 
 ## Contributors
-Base template code provided by taniarascia (https://www.taniarascia.com/node-express-postgresql-heroku/)
-Daniel Van Acker
-Bogdan Tanasie
+Base template code provided by taniarascia (https://www.taniarascia.com/node-express-postgresql-heroku/)  
+Daniel Van Acker  
+Bogdan Tanasie  

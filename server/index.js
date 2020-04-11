@@ -20,14 +20,16 @@ const getAvailPilots = (request, response) => {
   })
 }
 
-const addPilot = (request, response) => {
-  const { eid, full_name, salary, start_date } = request.body
+const addExpedition = (request, response) => {
+  const { e_name, lead_eid, start_date, end_date, budget } = request.body
+  console.log(request.body);
 
-  pool.query('INSERT INTO pilot (eid, full_name, salary, start_date) VALUES ($1, $2, $3, $4)', [eid, full_name, salary, start_date], error => {
+  pool.query('INSERT INTO expedition (e_name, lead_eid, start_date, end_date, budget) VALUES ($1, $2, $3, $4, $5)', 
+  [e_name, lead_eid, start_date, end_date, budget], error => {
     if (error) {
       throw error
     }
-    response.status(201).json({ status: 'success', message: 'Pilot added.' })
+    response.status(201).json({ status: 'success', message: 'Expedition added.' })
   })
 }
 
@@ -80,12 +82,14 @@ const closePool = (request, response) => {
     response.status(200).json({message: 'Connection closed.'})
 }
 
+app.route('/addExpedition')
+  .post(addExpedition)
+
 app.route('/getAvailScientists')
   .get(getAvailScientists)
 
-  app.route('/getAvailLeadScientists')
+app.route('/getAvailLeadScientists')
   .get(getAvailLeadScientists)
-
 
 app.route('/getCapableShips')
   .get(getCapableShips)

@@ -31,10 +31,26 @@ const addPilot = (request, response) => {
   })
 }
 
+const getCapableShips = (request, response) => {
+  const {e_name} = request.query;
+
+  pool.query('WITH s2 AS (SELECT * FROM spaceship WHERE spaceship.serial_num NOT IN (SELECT serial_num FROM providestransport)),' +
+  `s1 AS (SELECT distance, s_name FROM spaceobject WHERE spaceobject.s_name IN (SELECT s_name FROM explores WHERE e_name=\'${e_name}\'))` +
+  'SELECT serial_num, model, s_name FROM s2 JOIN s1 ON s2.max_range >= s1.distance', [], (error, results) => {
+    if(error) {
+      throw error
+    }
+    response.status(200).json(results.rows)
+  })
+}
+
 const closePool = (request, response) => {
     pool.end();
     response.status(200).json({message: 'Connection closed.'})
 }
+
+app.route('/getCapableShips')
+  .get(getCapableShips)
 
 app.route('/pilots')
   .get(getPilots)

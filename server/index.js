@@ -11,8 +11,8 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cors());
 
-const getPilots = (request, response) => {
-  pool.query('SELECT * FROM pilot', (error, results) => {
+const getAvailPilots = (request, response) => {
+  pool.query('SELECT eid, full_name FROM pilot WHERE eid NOT IN (SELECT eid1 FROM flies) AND eid NOT IN (SELECT eid2 FROM flies);', (error, results) => {
     if (error) {
       throw error
     }
@@ -90,9 +90,8 @@ app.route('/getAvailScientists')
 app.route('/getCapableShips')
   .get(getCapableShips)
 
-app.route('/pilots')
-  .get(getPilots)
-  .post(addPilot);
+app.route('/getAvailPilots')
+  .get(getAvailPilots)
 
 app.route('/terminate')
   .get(closePool)

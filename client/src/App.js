@@ -13,8 +13,8 @@ class App extends Component {
     newExpedition: {
       e_name: "",
       lead_eid: 0,
-      start_date: "2012-04-23T18:25:43.511Z",
-      end_date: "2012-04-23T18:25:43.511Z",
+      start_date: "",
+      end_date: "",
       budget: 0
     },
     expedition: {
@@ -32,14 +32,15 @@ class App extends Component {
 
 
   componentDidMount(){
-    this.getCapableShips();
-    this.getAvailScientists();
     this.getAvailPilots();
-    this.addExpedition();
+    this.getCapableShips();
+    
     this.promoteScientist();
-    this.terminateProgram();
+    //this.terminateProgram();
+    //this.getAvailScientists(); this crashes when called but still works??
+    this.addExpedition();
   }
-
+  
   // Query 1
   getCapableShips = _ => {
     var query_e_name = this.state.ship.e_name;
@@ -88,9 +89,6 @@ class App extends Component {
   }
 
   render(){
-    if(this.state.terminate != null){
-      return;
-    }
     return (
       <div>
       <div><b><u>Welcome to Horizon's Edge Mission Control</u></b></div>

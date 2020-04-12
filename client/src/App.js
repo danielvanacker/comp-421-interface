@@ -6,27 +6,57 @@ import axios from 'axios';
 class App extends Component {
   
   state = {
-    pilots: []
+    scientists: [],
+    pilots: [],
+    promotedScientist: {
+      eid: 0,
+      full_name: "",
+      salary: 0,
+      start_date: "2009-02-15T00:00:00Z"
+    }
   }
 
   componentDidMount(){
-    axios.get('/pilots')
-      .then(res => this.setState({pilots: res.data}))
-      .catch(err => console.log(err))
+    this.getAvailScientists();
   }
 
+  getAvailPilots = _ => {
+    axios.get('/getAvailPilots')
+    .then(res => this.setState({pilots: res.data}))
+    .catch(err => console.log(err))
+  }
+
+  getAvailScientists = _ => {
+    axios.get('/getAvailScientists')
+    .then(res => this.setState({scientists: res.data}))
+    .catch(err => console.log(err))
+  }
+
+  /*
+  promoteScientist = _ => {
+     axios.get('/promoteScientist')
+    .then(res => this.setState({scientists: res.data}))
+    .catch(err => console.log(err))
+  }
+  */
+
   render(){
-    if(!this.state.pilots.length){
-      return <div>"There are no pilots.</div>;
-    }
     return (
       <div>
-        {this.state.pilots.map(pilot => (
+      <div>
+        <input value = {this.state.promotedScientist.eid} onChange={e => this.setState( {promotedScientist: {...this.promoteScientist, eid: e.target.value}})} />
+        <input value = {this.state.promotedScientist.full_name} />
+        <input value = {this.state.promotedScientist.salary} />
+        <input value = {this.state.promotedScientist.start_date} />
+      </div>
+      <br></br>
+      <br></br>
+      Available Scientists
+      <br></br>
+        {this.state.scientists.map(sci => (
           <div>
-            <div>{pilot.eid}</div>
-            <div> {pilot.full_name}</div>
-            <div>{pilot.salary} </div>
-            <div>{pilot.start_date} </div>
+            <div>Eid: {sci.eid}</div>
+            <div>Full name: {sci.full_name}</div>
             <br></br>
           </div>
         ))}

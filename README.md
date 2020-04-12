@@ -16,7 +16,7 @@ npm start
 Note: always call /terminate before closing the application to close the serverpool
 
 ### Endpoints
-/getCapableShip: Display the serial number, model, and space object of spaceships that are capable of flying to the space object that is associated with a certain expedition and that are not associated with another expedition.   
+```bash/getCapableShip:``` Display the serial number, model, and space object of spaceships that are capable of flying to the space object that is associated with a certain expedition and that are not associated with another expedition.   
   
 {/getAvailScientists, /getAvailLeadScientists}: Generate a list of all eids and names of scientists and lead scientists that can go on a certain expedition (don’t have overlapping dates with another expedition)   
   

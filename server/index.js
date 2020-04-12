@@ -11,6 +11,33 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cors());
 
+const promoteScientist = (request, response) => {
+  const { eid } = request.body
+
+  pool.query('INSERT INTO leadscientist (eid, full_name, salary, start_date, specialization) ' +
+  '(SELECT eid, full_name, salary, start_date, specialization ' +
+  'FROM scientist ' +
+  `WHERE scientist.eid=${eid});`, (error) => {
+    if (error) {
+      throw error
+    } else {
+      pool.query(`DELETE FROM partakesin WHERE eid=${eid};`, (error) => {
+        if (error) {
+          throw error
+        } else {
+          pool.query(`DELETE FROM scientist WHERE eid=${eid};`, (error) => {
+            if (error) {
+              throw error
+            } else {
+              response.status(201).json({ status: 'success', message: 'Scientist promoted.' })
+            }
+          })
+        }
+      })
+    }
+  })
+}
+
 const getAvailPilots = (request, response) => {
   pool.query('SELECT eid, full_name FROM pilot WHERE eid NOT IN (SELECT eid1 FROM flies) AND eid NOT IN (SELECT eid2 FROM flies);', (error, results) => {
     if (error) {
@@ -81,6 +108,9 @@ const closePool = (request, response) => {
     pool.end();
     response.status(200).json({message: 'Connection closed.'})
 }
+
+app.route('/promoteScientist')
+  .post(promoteScientist)
 
 app.route('/addExpedition')
   .post(addExpedition)

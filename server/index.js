@@ -11,6 +11,8 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cors());
 
+
+// Query 5
 const promoteScientist = (request, response) => {
   const { eid } = request.body
 
@@ -38,6 +40,7 @@ const promoteScientist = (request, response) => {
   })
 }
 
+// Query 3
 const getAvailPilots = (request, response) => {
   pool.query('SELECT eid, full_name FROM pilot WHERE eid NOT IN (SELECT eid1 FROM flies) AND eid NOT IN (SELECT eid2 FROM flies);', (error, results) => {
     if (error) {
@@ -47,6 +50,7 @@ const getAvailPilots = (request, response) => {
   })
 }
 
+// Query 4
 const addExpedition = (request, response) => {
   const { e_name, lead_eid, start_date, end_date, budget } = request.body
   console.log(request.body);
@@ -60,6 +64,7 @@ const addExpedition = (request, response) => {
   })
 }
 
+// Query 1
 const getCapableShips = (request, response) => {
   const {e_name} = request.query;
 
@@ -73,6 +78,7 @@ const getCapableShips = (request, response) => {
   })
 }
 
+// Query 2
 const getAvailScientists = (request, response) => {
   const {e_name} = request.query;
 
@@ -89,6 +95,8 @@ const getAvailScientists = (request, response) => {
   })
 }
 
+
+// Query 2
 const getAvailLeadScientists = (request, response) => {
   const {e_name} = request.query;
 

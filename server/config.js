@@ -1,3 +1,4 @@
+// Basic config for connecting to postre server.
 require('dotenv').config();
 
 const { Pool } = require('pg');

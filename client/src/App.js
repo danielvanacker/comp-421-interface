@@ -26,14 +26,18 @@ class App extends Component {
     promotedScientist: {
       eid: 0,
       status: ""
-    }
+    },
+    terminte: null
   }
 
 
   componentDidMount(){
+    this.getCapableShips();
     this.getAvailScientists();
     this.getAvailPilots();
+    this.addExpedition();
     this.promoteScientist();
+    this.terminateProgram();
   }
 
   // Query 1
@@ -72,13 +76,26 @@ class App extends Component {
   // Query 5
   promoteScientist = _ => {
      axios.post('/promoteScientist', {eid: this.state.promotedScientist.eid})
+    .then(res => this.setState({terminate: res.data}))
+    .catch(err => console.log(err))
+  }
+
+  // Terminate
+  terminateProgram = _ => {
+    axios.get('/terminate')
     .then(res => console.log(res))
     .catch(err => console.log(err))
   }
 
   render(){
+    if(this.state.terminate != null){
+      return;
+    }
     return (
       <div>
+      <div><b><u>Welcome to Horizon's Edge Mission Control</u></b></div>
+      <br></br>
+        <b></b>
         <b>Promote scientist by eid:</b>
         <br></br>
         <div>
@@ -187,7 +204,10 @@ class App extends Component {
             <br></br>
           </div>
         ))}
+        <br></br>
+        <div><button onClick={this.terminateProgram} > Exit Program.</button> </div>
       </div>
+      
     );
   }
 }

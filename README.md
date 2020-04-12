@@ -27,7 +27,15 @@ Note: always call /terminate before closing the application to close the serverp
 ```/promoteScientist:``` Promote a scientist to lead scientist.
 
 ## Frontend
-TBD
+To install
+```bash
+npm install
+```
+  
+To run
+```bash
+npm start
+```
 
 ## Contributors
 Base template code provided by taniarascia (https://www.taniarascia.com/node-express-postgresql-heroku/)  

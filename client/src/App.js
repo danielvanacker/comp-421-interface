@@ -27,135 +27,139 @@ class App extends Component {
       eid: 0,
       status: ""
     },
-    terminte: null
+    terminte: null,
+    add_expedition_message: ""
   }
 
 
-  componentDidMount(){
-    this.getAvailPilots();
-    this.getCapableShips();
-    
-    this.promoteScientist();
+  componentDidMount() {
+    //this.getAvailPilots();
+    //this.getCapableShips();
+
+    //this.promoteScientist();
     //this.terminateProgram();
     //this.getAvailScientists(); this crashes when called but still works??
-    this.addExpedition();
+    //this.addExpedition();
   }
-  
+
   // Query 1
   getCapableShips = _ => {
     var query_e_name = this.state.ship.e_name;
     axios.get('/getCapableShips?e_name=' + this.state.ship.e_name)
-    .then(res => this.setState({ships: res.data}))
-    .catch(err => console.log(err))
+      .then(res => this.setState({ ships: res.data }))
+      .catch(err => console.log(err))
   }
   // Query 2
   getAvailScientists = _ => {
     axios.get('/getAvailScientists?e_name=' + this.state.expedition.e_name)
-    .then(res => this.setState({scientists: res.data}))
-    .catch(err => console.log(err))
+      .then(res => this.setState({ scientists: res.data }))
+      .catch(err => console.log(err))
 
     axios.get('/getAvailLeadScientists?e_name=' + this.state.expedition.e_name)
-    .then(res => this.setState({leadScientists: res.data}))
-    .catch(err => console.log(err))
+      .then(res => this.setState({ leadScientists: res.data }))
+      .catch(err => console.log(err))
   }
 
   // Query 3
   getAvailPilots = _ => {
     axios.get('/getAvailPilots')
-    .then(res => this.setState({pilots: res.data}))
-    .catch(err => console.log(err))
+      .then(res => this.setState({ pilots: res.data }))
+      .catch(err => console.log(err))
   }
-  
+
   // Query 4 --> still buggy because of params
   addExpedition = _ => {
-    axios.post('/addExpedition', {e_name: this.state.newExpedition.e_name, lead_eid: this.state.newExpedition.lead_eid ,
-      start_date: this.state.newExpedition.start_date, end_date: this.state.newExpedition.budget})
-    .then(res => console.log(res))
-    .catch(err => console.log(err))
+    console.log(this.state.newExpedition)
+    axios.post('/addExpedition', {
+      e_name: this.state.newExpedition.e_name, lead_eid: this.state.newExpedition.lead_eid,
+      start_date: this.state.newExpedition.start_date, end_date: this.state.newExpedition.end_date,
+      budget: this.state.newExpedition.budget
+    })
+      .then(res => this.setState({add_expedition_message: res.data.message}))
+      .catch(err => {
+        console.log(err);
+        this.setState({add_expedition_message: "Invalid"})
+      })
   }
 
   // Query 5
   promoteScientist = _ => {
-     axios.post('/promoteScientist', {eid: this.state.promotedScientist.eid})
-    .then(res => this.setState({terminate: res.data}))
-    .catch(err => console.log(err))
+    axios.post('/promoteScientist', { eid: this.state.promotedScientist.eid })
+      .then(res => this.setState({ terminate: res.data }))
+      .catch(err => console.log(err))
   }
 
   // Terminate
   terminateProgram = _ => {
     axios.get('/terminate')
-    .then(res => console.log(res))
-    .catch(err => console.log(err))
+      .then(res => console.log(res))
+      .catch(err => console.log(err))
   }
 
-  render(){
+  render() {
     return (
-      <div>
-      <div><b><u>Welcome to Horizon's Edge Mission Control</u></b></div>
-      <br></br>
-        <b></b>
+      <div class="content">
+        <div class="title"><b><u>Welcome to Horizon's Edge Mission Control</u></b></div>
         <b>Promote scientist by eid:</b>
-        <br></br>
         <div>
           <input value={this.state.promotedScientist.eid}
             onChange={e => this.setState({ promotedScientist: { ...this.promoteScientist, eid: e.target.value } })}
           />
           <button onClick={this.promoteScientist} > Promote scientist.</button>
         </div>
-        <br></br>
-        <b>Add new expedition:</b>
-        <br></br>
-        <div>
-          Expedition name: <input value={this.state.newExpedition.e_name}
-            onChange={e => this.setState({ newExpedition: { ...this.addExpedition, e_name: e.target.value } })}
-          />
-          <br></br>
-          Lead scientist: <input value={this.state.newExpedition.lead_eid}
-            onChange={e => this.setState({ newExpedition: { ...this.addExpedition, lead_eid: e.target.value } })}
-          />
-          <br></br>
-          Start date: <input value={this.state.newExpedition.start_date}
-            onChange={e => this.setState({ newExpedition: { ...this.addExpedition, start_date: e.target.value } })}
-          />
-          <br></br>
-          End date: <input value={this.state.newExpedition.end_date}
-            onChange={e => this.setState({ newExpedition: { ...this.addExpedition, end_date: e.target.value } })}
-          />
-          <br></br>
-          <br></br>
-          End date: <input value={this.state.newExpedition.budget}
-            onChange={e => this.setState({ newExpedition: { ...this.addExpedition, budget: e.target.value } })}
-          />
-          <br></br>
-          <button onClick={this.addExpedition} > Add expedition.</button>
-        </div>
-        <br></br>
 
-
-        <b>Get capable ships by expedition name:</b>
-        <br></br>
-        <div>
-          <input value={this.state.ship.e_name}
-            onChange={e => this.setState({ ship: { ...this.getCapableShips, e_name: e.target.value } })}
-          />
-          <button onClick={this.getCapableShips} > Get capable ship.</button>
-        </div>
-        <br></br>
-        <div>
-        <b>Available Ships:</b>
-        <br></br>
-        <br></br>
-          {this.state.ships.map(ship => (
-            <div>
-              <div>Serial number: {ship.serial_num}</div>
-              <div>Model: {ship.model}</div>
-              <div>s_name: {ship.s_name}</div>
-              <br></br>
-            </div>
-          ))}
+        <div class="newExpedition">
+          <b>Add new expedition:</b>
+          <div>
+            Expedition name: <input value={this.state.newExpedition.e_name}
+              onChange={e => this.setState({ newExpedition: { ...this.state.newExpedition, e_name: e.target.value } })}
+            />
+            Lead scientist: <input value={this.state.newExpedition.lead_eid}
+              onChange={e => this.setState({ ...this.state, newExpedition: { ...this.state.newExpedition, lead_eid: e.target.value } })}
+            />
+            Start date: <input value={this.state.newExpedition.start_date}
+              onChange={e => this.setState({ ...this.state, newExpedition: { ...this.state.newExpedition, start_date: e.target.value } })}
+            />
+            End date: <input value={this.state.newExpedition.end_date}
+              onChange={e => this.setState({ ...this.state, newExpedition: { ...this.state.newExpedition, end_date: e.target.value } })}
+            />
+            Budget: <input value={this.state.newExpedition.budget}
+              onChange={e => this.setState({ ...this.state, newExpedition: { ...this.state.newExpedition, budget: e.target.value } })}
+            />
+            <button onClick={this.addExpedition} > Add expedition.</button>
+            <div>Message: {this.state.add_expedition_message}</div>
+          </div>
         </div>
 
-        <br></br>
+        <div class="capableShips">
+          <b>Get capable ships by expedition name:</b>
+          <br></br>
+          <div>
+            <input value={this.state.ship.e_name}
+              onChange={e => this.setState({ ship: { ...this.getCapableShips, e_name: e.target.value } })}
+            />
+            <button onClick={this.getCapableShips} > Get capable ship.</button>
+          </div>
+          <div>
+            <b>Available Ships:</b>
+            <table>
+              <tr>
+                <td>Serial Number</td>
+                <td>Model</td>
+                <td>Ship Name</td>
+              </tr>
+            {this.state.ships.map(ship => (
+              <tr>
+                <td>{ship.serial_num}</td>
+                <td>{ship.model}</td>
+                <td>{ship.s_name}</td>
+              </tr>
+            ))}
+            </table>
+          </div>
+        </div>
+
+        <div class="scientists"></div>
         <b>Get available scientists by expedition name:</b>
         <br></br>
         <div>
@@ -164,48 +168,56 @@ class App extends Component {
           />
           <button onClick={this.getAvailScientists} > Get all available scientists..</button>
         </div>
-        <br></br>
-        <div>
-        <b>Available scientists:</b>
-        <br></br>
-        <br></br>
-          {this.state.scientists.map(scientist => (
-            <div>
-              <div>Eid: {scientist.eid}</div>
-              <div>Full name: {scientist.full_name}</div>
-              <br></br>
-            </div>
-          ))}
-        </div>
-        <br></br>
-        <div>
-        <b>Available lead scientists:</b>
-        <br></br>
-        <br></br>
-          {this.state.leadScientists.map(lscientist => (
-            <div>
-              <div>Eid: {lscientist.eid}</div>
-              <div>Full_name: {lscientist.full_name}</div>
-              <br></br>
-            </div>
-          ))}
-        </div>
-      <br></br>
-      <br></br>
-      <b>Available pilots:</b>
-      <br></br>
-        <br></br>
-        {this.state.pilots.map(pilot => (
+
+        <div class="scientistgrid">
           <div>
-            <div>Eid: {pilot.eid}</div>
-            <div>Full name: {pilot.full_name}</div>
-            <br></br>
+            <b>Available scientists:</b>
+            <table>
+            <tr>
+                <td>Eid</td>
+                <td>Full Name</td>
+              </tr>
+            {this.state.scientists.map(scientist => (
+              <tr>
+                <td>{scientist.eid}</td>
+                <td>{scientist.full_name}</td>
+              </tr>
+            ))}
+            </table>
           </div>
-        ))}
-        <br></br>
+          <br></br>
+          <div>
+            <b>Available lead scientists:</b>
+            <table>
+            {this.state.leadScientists.map(lscientist => (
+              <tr>
+                <td>{lscientist.eid}</td>
+                <td>{lscientist.full_name}</td>
+              </tr>
+            ))}
+            </table>
+          </div>
+        </div>
+
+        <div class="pilots">
+          <button onClick={this.getAvailPilots} > Get available pilots.</button>
+          <b>Available pilots:</b>
+          <table>
+            <tr>
+              <th>Eid</th>
+              <th>Full Name</th>
+            </tr>
+          {this.state.pilots.map(pilot => (
+            <tr>
+              <td>{pilot.eid}</td>
+              <td>{pilot.full_name}</td>
+            </tr>
+          ))}
+          </table>
+        </div>
         <div><button onClick={this.terminateProgram} > Exit Program.</button> </div>
       </div>
-      
+
     );
   }
 }

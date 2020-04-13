@@ -28,7 +28,8 @@ class App extends Component {
       status: ""
     },
     terminte: null,
-    add_expedition_message: ""
+    add_expedition_message: "",
+    promoteScientist_message: ""
   }
 
 
@@ -67,7 +68,7 @@ class App extends Component {
       .catch(err => console.log(err))
   }
 
-  // Query 4 --> still buggy because of params
+  // Query 4 
   addExpedition = _ => {
     console.log(this.state.newExpedition)
     axios.post('/addExpedition', {
@@ -84,9 +85,19 @@ class App extends Component {
 
   // Query 5
   promoteScientist = _ => {
-    axios.post('/promoteScientist', { eid: this.state.promotedScientist.eid })
-      .then(res => this.setState({ terminate: res.data }))
-      .catch(err => console.log(err))
+    if(!isNaN(this.state.promotedScientist.eid)) {
+      axios.post('/promoteScientist', { eid: this.state.promotedScientist.eid})
+      .then(res => this.setState({promoteScientist_message: res.data.message }))
+      .catch(err => {
+        console.log(err);
+        this.setState({promoteScientist_message: "Invalid"})
+      })
+    }
+    else {
+      console.log(!isNaN(this.state.promotedScientist.eid))
+      console.log(this.state.promotedScientist.eid)
+      this.setState({promoteScientist_message: "Invalid input" })
+    }
   }
 
   // Terminate
@@ -106,6 +117,7 @@ class App extends Component {
             onChange={e => this.setState({ promotedScientist: { ...this.promoteScientist, eid: e.target.value } })}
           />
           <button onClick={this.promoteScientist} > Promote scientist.</button>
+          <div>Message: {this.state.promoteScientist_message}</div>
         </div>
 
         <div class="newExpedition">
@@ -174,8 +186,8 @@ class App extends Component {
             <b>Available scientists:</b>
             <table>
             <tr>
-                <td>Eid</td>
-                <td>Full Name</td>
+                <td><b>Eid</b></td>
+                <td><b>Full Name</b></td>
               </tr>
             {this.state.scientists.map(scientist => (
               <tr>
